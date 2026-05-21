@@ -1,5 +1,0 @@
-EJECUTAR EL SERVICIO DE DOCKER
-    docker compose -f docker-compose-dev.yml up -- build -d
-consultar los servicios
-    docker ps
-
