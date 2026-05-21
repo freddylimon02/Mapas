@@ -1,0 +1,48 @@
+Services:
+  postgres_postgis:
+    #nombre del contenedor
+    container_name: postgres_postgis
+    #imagen oficial de postgres y postgis
+    image: postgis/postgis:17-3.5
+    #reinicio automatico
+    restart: unless-stopped
+    #conexion, variables de entornos o conexion
+    environment:
+      #nombre base de datos
+      POSTGRES_DB: postgisdb
+      #usuarios
+      POSTGRES_USER: usuario
+      #password
+      POSTGRES_PASSWORD: password
+    #puertos de conexion
+    ports:
+      - "5432:5432"
+    #persistencia de datos en contenedores
+    volumens:
+    #evita perdida de informacion al recrear el contenedor
+      - postgis_data:/var/lib/postgressql/data
+      #todo los archivos sql se ejeta solo
+      - ./init:/docker-entrypoint-initdb.d
+    # Para la comunicacion interna
+    networks:
+      - postgis_network
+
+#servicios para pgadmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    depends_en:
+      - postgres_postgis
+    networks: 
+      - postgis_network
+
+volumes:
+  postgis_data:
+network:
+  postgis_network:
